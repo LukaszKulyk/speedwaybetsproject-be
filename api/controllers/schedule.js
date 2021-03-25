@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const betHelper = require('../helpers/bet');
+
 const Schedule = require('../models/schedule');
 
 exports.schedule_get_all = (req, res, next) => {
@@ -229,6 +231,8 @@ exports.schedule_update_by_id = (req,res,next) => {
     for (const ops of req.body) {
         updateOps[ops.propName] = ops.value;
     }
+	console.log(updateOps.gameResult.smallPoints);
+	betHelper.checkHowManyPointsUserCollectedForCurrentGame(updateOps.gameResult.smallPoints);
     Schedule.updateOne({ _id: id }, { $set: updateOps})
         .exec()
         .then(result => {
