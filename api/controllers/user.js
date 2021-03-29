@@ -120,3 +120,51 @@ exports.user_delete_one_by_id = (req, res, next) => {
             });
         });
 }
+
+exports.get_all_players = (req, res, next) => {
+    User.find({isAdmin: false})
+        .exec()
+        .then(docs => {
+            const response = {
+                count: docs.length,
+                bets: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+						creationDate: doc.creationDate,
+						lastUpdateDate: doc.lastUpdateDate,
+                        email: doc.email,
+                        userName: doc.userName,
+                        collectedPoints: doc.collectedPoints
+                    }
+                })
+            }
+            //console.log(docs);
+            res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        })
+}
+
+exports.user_update_by_id = (req,res,next) => {
+    const id = req.params.userId;
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value;
+    }
+    User.updateOne({ _id: id }, { $set: updateOps})
+        .exec()
+        .then(result => {
+            console.log(result);
+            res.status(200).json(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};

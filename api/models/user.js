@@ -12,7 +12,8 @@ const userSchema = mongoose.Schema({
     },
     userName: { type: String, required: true, unique: true },
     isAdmin: { type: Boolean, default: false },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    collectedPoints: { type: Number, required: true, default: 0}
 })
 
 

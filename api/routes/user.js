@@ -14,9 +14,8 @@ router.post('/login', UserController.user_login);
 
 router.delete('/:userId', UserController.user_delete_one_by_id);
 
+router.patch('/:userId', UserController.user_update_by_id);
 
-
-
-
+router.get('/players/all', UserController.get_all_players);
 
 module.exports = router;
