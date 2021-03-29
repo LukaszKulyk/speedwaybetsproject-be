@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const betHelper = require('../helpers/bet');
 
 const Schedule = require('../models/schedule');
+const Bet = require('../models/bet');
+const BetController = require('../controllers/bet');
 
 exports.schedule_get_all = (req, res, next) => {
     Schedule.find()
@@ -231,14 +233,61 @@ exports.schedule_update_by_id = (req,res,next) => {
     for (const ops of req.body) {
         updateOps[ops.propName] = ops.value;
     }
+	//here is where the magic begins
 	console.log(updateOps.gameResult.smallPoints);
 	betHelper.checkHowManyPointsUserCollectedForCurrentGame(updateOps.gameResult.smallPoints);
+	const gameDetails = {
+		smallPoints: updateOps.gameResult.smallPoints,
+		homeTeamPoints: updateOps.gameResult.homeTeamPoints,
+		awayTeamPoints: updateOps.gameResult.awayTeamPoints,
+		gameStatus: updateOps.gameStatus,
+		isGamePlayed: updateOps.isGamePlayed,
+		isGameWeekPlayed: updateOps.isGameWeekPlayed,
+	}
+	let allBetsDetails = [];
+
     Schedule.updateOne({ _id: id }, { $set: updateOps})
         .exec()
         .then(result => {
             console.log(result);
             res.status(200).json(result);
         })
+		.then(() => {
+			if(gameDetails.isGamePlayed === true){
+
+				Bet.find({gameId: id})
+					.exec()
+					.then(docs => {
+						allBetsDetails = docs.map(doc => {
+								return {
+									_id: doc._id,
+									homeTeamPoints: doc.homeTeamPoints,
+									awayTeamPoints: doc.awayTeamPoints,
+									collectedPoints: doc.collectedPoints
+								}
+							})
+						allBetsDetails.forEach(bet => {
+							let pointsCollected = betHelper.checkAndCalculatePointsWhichBetCollectsForCurrentGame(gameDetails, bet);
+
+							const betToUpdateId = bet._id;
+							const updateBetOps = {
+								collectedPoints: pointsCollected
+							}
+							Bet.updateOne({ _id: betToUpdateId }, { $set: updateBetOps})
+								.exec()
+								.then(result => {
+									console.log(result);
+								})
+								.catch(err => {
+									console.log(err);
+									res.status(500).json({
+										error: err
+									});
+								});
+						})
+					})
+			}
+		})
         .catch(err => {
             console.log(err);
             res.status(500).json({
