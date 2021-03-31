@@ -1,21 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-//const checkAdmin = require('../middleware/check-admin');
 
-//const Schedule = require('../models/schedule')
-
+const checkAdmin = require('../middleware/check-admin');
 const ScheduleController = require('../controllers/schedule');
 
 router.get('/', ScheduleController.schedule_get_all);
 
-router.post('/', ScheduleController.schedule_create_new);
+router.post('/', checkAdmin, ScheduleController.schedule_create_new);
 
 router.get('/:gameWeekId', ScheduleController.schedule_get_by_id);
 
-router.patch('/:gameWeekId', ScheduleController.schedule_update_by_id);
+router.patch('/:gameWeekId', checkAdmin, ScheduleController.schedule_update_by_id);
 
-router.delete('/:gameWeekId', ScheduleController.schedule_delete_by_id);
+router.delete('/:gameWeekId', checkAdmin, ScheduleController.schedule_delete_by_id);
 
 router.get('/played/all', ScheduleController.schedule_get_all_played);
 

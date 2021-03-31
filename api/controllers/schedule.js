@@ -234,25 +234,39 @@ exports.schedule_update_by_id = (req,res,next) => {
         updateOps[ops.propName] = ops.value;
     }
 	//here is where the magic begins
-	console.log(updateOps.gameResult.smallPoints);
-	betHelper.checkHowManyPointsUserCollectedForCurrentGame(updateOps.gameResult.smallPoints);
-	const gameDetails = {
+	//console.log(updateOps.gameResult.smallPoints);
+	//betHelper.checkHowManyPointsUserCollectedForCurrentGame(updateOps.gameResult.smallPoints);
+	let gameDetails = {}; //Solves Assignment to constant variable problem
+	if(updateOps.gameStatus === 'played'){
+		gameDetails = {
+			smallPoints: updateOps.gameResult.smallPoints,
+			homeTeamPoints: updateOps.gameResult.homeTeamPoints,
+			awayTeamPoints: updateOps.gameResult.awayTeamPoints,
+			gameStatus: updateOps.gameStatus,
+			isGamePlayed: updateOps.isGamePlayed,
+			isGameWeekPlayed: updateOps.isGameWeekPlayed,
+		}
+	}
+	else{
+		gameDetails = {
+			gameStatus: updateOps.gameStatus
+		}
+	}
+	//console.log(gameDetails);
+	//console.log(updateOps);
+	/*const gameDetails = {
 		smallPoints: updateOps.gameResult.smallPoints,
 		homeTeamPoints: updateOps.gameResult.homeTeamPoints,
 		awayTeamPoints: updateOps.gameResult.awayTeamPoints,
 		gameStatus: updateOps.gameStatus,
 		isGamePlayed: updateOps.isGamePlayed,
 		isGameWeekPlayed: updateOps.isGameWeekPlayed,
-	}
+	}*/
 	let allBetsDetails = [];
 
     Schedule.updateOne({ _id: id }, { $set: updateOps})
         .exec()
-        .then(result => {
-            console.log(result);
-            res.status(200).json(result);
-        })
-		.then(() => {
+		.then(result => {
 			if(gameDetails.isGamePlayed === true){
 
 				Bet.find({gameId: id})
@@ -269,6 +283,7 @@ exports.schedule_update_by_id = (req,res,next) => {
 						allBetsDetails.forEach(bet => {
 							let pointsCollected = betHelper.checkAndCalculatePointsWhichBetCollectsForCurrentGame(gameDetails, bet);
 
+							console.log('User collected: ' + pointsCollected);
 							const betToUpdateId = bet._id;
 							const updateBetOps = {
 								collectedPoints: pointsCollected
@@ -287,6 +302,11 @@ exports.schedule_update_by_id = (req,res,next) => {
 						})
 					})
 			}
+			else{
+				console.log('game is not played.')
+			}
+			console.log(result);
+            res.status(200).json(result);
 		})
         .catch(err => {
             console.log(err);
@@ -554,7 +574,7 @@ exports.schedule_get_next_scheduled = (req, res, next) => {
 };
 
 /*exports.schedule_get_next_scheduled = (req, res, next) => {
-    //const id = req.params.gameWeekId
+    const id = req.params.gameWeekId
     Schedule.find({isGameWeekPlayed: false})
 		.sort({gameWeek: 1}) //because first gameWeek which is returned is the next one which will be played
         .limit(1)
@@ -567,7 +587,7 @@ exports.schedule_get_next_scheduled = (req, res, next) => {
 						_id: doc._id,
 						creationDate: doc.creationDate,
 						lastUpdateDate: doc.lastUpdateDate,
-						//author: doc.author,
+						author: doc.author,
 						gameWeek: doc.gameWeek,
 						season: doc.season,
 						isGameWeekPlayed: doc.isGameWeekPlayed,
@@ -583,4 +603,4 @@ exports.schedule_get_next_scheduled = (req, res, next) => {
 				error:err
 			});
 		});
-};*/
+	};*/
