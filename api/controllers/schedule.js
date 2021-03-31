@@ -283,7 +283,7 @@ exports.schedule_update_by_id = (req,res,next) => {
 						allBetsDetails.forEach(bet => {
 							let pointsCollected = betHelper.checkAndCalculatePointsWhichBetCollectsForCurrentGame(gameDetails, bet);
 
-							console.log('User collected: ' + pointsCollected);
+							//console.log('User collected: ' + pointsCollected);
 							const betToUpdateId = bet._id;
 							const updateBetOps = {
 								collectedPoints: pointsCollected
