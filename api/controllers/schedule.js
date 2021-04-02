@@ -8,6 +8,7 @@ const BetController = require('../controllers/bet');
 
 exports.schedule_get_all = (req, res, next) => {
     Schedule.find()
+	.sort({gameWeek: 1})
         .exec()
         .then(docs => {
             const response = {
