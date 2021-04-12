@@ -10,7 +10,7 @@ const userRoutes = require('./api/routes/user');
 const scheduleRoutes = require('./api/routes/schedule');
 const BetRoutes = require('./api/routes/bet');
 
-mongoose.connect('mongodb+srv://speedway-bets-project-db-admin:' + process.env.MONGO_ATLAS_PW + '@speedway-bets-project-d.upya3.mongodb.net/sbpdb?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGO_ATLAS_CS, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
