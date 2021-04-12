@@ -4,7 +4,8 @@ const betHelper = require('../helpers/bet');
 
 const Schedule = require('../models/schedule');
 const Bet = require('../models/bet');
-const BetController = require('../controllers/bet');
+//const BetController = require('../controllers/bet');
+const User = require('../models/user');
 
 exports.schedule_get_all = (req, res, next) => {
     Schedule.find()
@@ -234,9 +235,7 @@ exports.schedule_update_by_id = (req,res,next) => {
     for (const ops of req.body) {
         updateOps[ops.propName] = ops.value;
     }
-	//here is where the magic begins
-	//console.log(updateOps.gameResult.smallPoints);
-	//betHelper.checkHowManyPointsUserCollectedForCurrentGame(updateOps.gameResult.smallPoints);
+
 	let gameDetails = {}; //Solves Assignment to constant variable problem
 	if(updateOps.gameStatus === 'played'){
 		gameDetails = {
@@ -253,16 +252,7 @@ exports.schedule_update_by_id = (req,res,next) => {
 			gameStatus: updateOps.gameStatus
 		}
 	}
-	//console.log(gameDetails);
-	//console.log(updateOps);
-	/*const gameDetails = {
-		smallPoints: updateOps.gameResult.smallPoints,
-		homeTeamPoints: updateOps.gameResult.homeTeamPoints,
-		awayTeamPoints: updateOps.gameResult.awayTeamPoints,
-		gameStatus: updateOps.gameStatus,
-		isGamePlayed: updateOps.isGamePlayed,
-		isGameWeekPlayed: updateOps.isGameWeekPlayed,
-	}*/
+
 	let allBetsDetails = [];
 
     Schedule.updateOne({ _id: id }, { $set: updateOps})
@@ -276,6 +266,7 @@ exports.schedule_update_by_id = (req,res,next) => {
 						allBetsDetails = docs.map(doc => {
 								return {
 									_id: doc._id,
+									userId: doc.userId, 
 									homeTeamPoints: doc.homeTeamPoints,
 									awayTeamPoints: doc.awayTeamPoints,
 									collectedPoints: doc.collectedPoints
@@ -284,7 +275,6 @@ exports.schedule_update_by_id = (req,res,next) => {
 						allBetsDetails.forEach(bet => {
 							let pointsCollected = betHelper.checkAndCalculatePointsWhichBetCollectsForCurrentGame(gameDetails, bet);
 
-							//console.log('User collected: ' + pointsCollected);
 							const betToUpdateId = bet._id;
 							const updateBetOps = {
 								collectedPoints: pointsCollected
@@ -300,6 +290,26 @@ exports.schedule_update_by_id = (req,res,next) => {
 										error: err
 									});
 								});
+
+							const userIdToBeUpdated = bet.userId;
+							let userCollectedPointsBefore = 0;
+
+							User.findById(userIdToBeUpdated)
+								.exec()
+								.then(doc => {
+									console.log(doc)
+									userCollectedPointsBefore = doc.collectedPoints + pointsCollected;
+								})
+								.then(() => {
+									const updateUserCollectedPoints = {
+										collectedPoints: userCollectedPointsBefore
+									}
+									User.updateOne({ _id: userIdToBeUpdated }, { $set: updateUserCollectedPoints})
+										.exec()
+										.then(result => {
+											console.log(result);
+										})
+								})
 						})
 					})
 			}
