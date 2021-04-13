@@ -53,7 +53,7 @@ exports.getAllUsersData = () => {
                             creationDate: new Date,
                             lastUpdateDate: new Date,
                             gameWeek: 1, //in the future it can be taken from settings???
-                            season: 2021,
+                            season: 2021, //in the future it can be taken from settings???
                             currentRank: currentRank.usersRank
                         });
 

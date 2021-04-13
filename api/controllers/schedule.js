@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const betHelper = require('../helpers/bet');
+const userHelper = require('../helpers/user')
 
 const Schedule = require('../models/schedule');
 const Bet = require('../models/bet');
@@ -318,6 +319,9 @@ exports.schedule_update_by_id = (req,res,next) => {
 			}
 			console.log(result);
             res.status(200).json(result);
+		})
+		.then(() => {
+			userHelper.getAllUsersData();
 		})
         .catch(err => {
             console.log(err);
