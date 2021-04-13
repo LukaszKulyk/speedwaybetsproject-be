@@ -21,15 +21,11 @@ exports.getAllUsersData = () => {
         })
         .then(response => {
             let arrayOfUsersSortedByCollectedPoints = this.sortUsersByPoints(response.allUsers)
-            //console.log(arrayOfUsersSortedByCollectedPoints)
             return arrayOfUsersSortedByCollectedPoints
         })
         .then(arrayOfUsersSortedByCollectedPoints => {
-            //console.log(arrayOfUsersSortedByCollectedPoints)
 
             const currentRank = this.prepareUserTableValues(arrayOfUsersSortedByCollectedPoints);
-
-            console.log(currentRank);
             
             PlayersResultsTable.find()
                 .sort({gameWeek: -1})
@@ -37,7 +33,6 @@ exports.getAllUsersData = () => {
                 .exec()
                 .then(docs => {
                     const response = {
-                        //count: docs.length,
                         playerResultsTable: docs.map(doc => {
                             return {
                                 _id: doc._id,
@@ -49,9 +44,6 @@ exports.getAllUsersData = () => {
                             }
                         })
                     }
-                    //console.log(docs);
-                    //res.status(200).json(response);
-                    console.log(response.playerResultsTable[0]);
 
                     if(response.playerResultsTable[0] === undefined){
                         console.log('Ohh there is no table yet. We need to create the first one!')
@@ -62,17 +54,32 @@ exports.getAllUsersData = () => {
                             lastUpdateDate: new Date,
                             gameWeek: 1, //in the future it can be taken from settings???
                             season: 2021,
-                            currentRank: [
-                                //current rank goes here.
-                            ]
+                            currentRank: currentRank.usersRank
                         });
 
-                        //playersResultsTable.save()
+                        playersResultsTable.save()
+                            .then(result => {
+                                console.log(result);
+                            })
                     }
                     else{
                         console.log('We are updating existing already table...')
+
+                        let updatedPlayersTableData = this.setCurrentRankArrows(currentRank.usersRank, response.playerResultsTable[0].currentRank)
+
+                        const id = response.playerResultsTable[0]._id
+                        const updateOps = {
+                            currentRank: updatedPlayersTableData
+                        }
+                        
+                        PlayersResultsTable.updateOne({ _id: id }, { $set: updateOps})
+                            .exec()
+                            .then(result => {
+                                console.log(result);
+                            })
                     }
                 })
+
         })
         .catch(err => {
             console.log(err);
@@ -89,20 +96,40 @@ exports.sortUsersByPoints = (users) => {
 
 exports.prepareUserTableValues = (arrayOfUsers) => {
 
-    let index = 1;
-
     const response = {
-        //count: docs.length,
-        usersRank: arrayOfUsers.map(user => {
+        usersRank: arrayOfUsers.map((user, index) => {
             return {
-                pos: index,
+                pos: index + 1,
                 username: user.userName,
                 points: user.collectedPoints,
-                arrow: "0"
+                arrow: "0",
             }
-            index += 1;
         })
     }
 
     return response;
+}
+
+exports.setCurrentRankArrows = (currentRank, lastRank) => {
+
+    currentRank.forEach(user => {
+        let lastPosition = lastRank.filter(function(p){return p.username === user.username})
+        let positionChange = this.calculatePositionDifference(user.pos, lastPosition[0].pos)
+        let arrowValue = this.preparePositionDifferenceForArrow(positionChange)
+        user.arrow = arrowValue
+    })
+    return currentRank
+}
+
+exports.calculatePositionDifference = (currentPosition, lastPosition) => {
+    return lastPosition - currentPosition
+}
+
+exports.preparePositionDifferenceForArrow = (positionDifference) => {
+    if(positionDifference > 0){
+        return '+' + positionDifference.toString()
+    }
+    else{
+        return positionDifference.toString()
+    }
 }
