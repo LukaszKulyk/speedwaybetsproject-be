@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 const PlayersResultsTable = require('../models/playersResultsTable');
 
-exports.getAllUsersData = () => {
+exports.calculateUsersTableAfterGameUpdate = () => {
 
     User.find({isAdmin: false})
         .exec()
@@ -79,7 +79,11 @@ exports.getAllUsersData = () => {
                             })
                     }
                 })
-
+        })
+        .then(() => {
+            res.status(200).json({
+                message: 'Current table has been updated!'
+            })
         })
         .catch(err => {
             console.log(err);

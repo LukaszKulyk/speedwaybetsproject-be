@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
+const userHelper = require('../helpers/user')
 
 exports.user_singup = (req, res, next) => {
 
@@ -168,3 +169,7 @@ exports.user_update_by_id = (req,res,next) => {
             });
         });
 };
+
+exports.user_calculate_and_update_players_table = (req, res, next) => {
+    userHelper.calculateUsersTableAfterGameUpdate();
+}

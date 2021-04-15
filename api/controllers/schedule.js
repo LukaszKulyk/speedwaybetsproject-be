@@ -321,8 +321,28 @@ exports.schedule_update_by_id = (req,res,next) => {
             res.status(200).json(result);
 		})
 		.then(() => {
-			userHelper.getAllUsersData();
+			userHelper.calculateUsersTableAfterGameUpdate();
 		})
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.schedule_update_by_id_without_calculations = (req,res,next) => {
+    const id = req.params.gameId;
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value;
+    }
+    Schedule.updateOne({ _id: id }, { $set: updateOps})
+        .exec()
+        .then(result => {
+            console.log(result);
+            res.status(200).json(result);
+        })
         .catch(err => {
             console.log(err);
             res.status(500).json({

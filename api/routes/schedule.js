@@ -23,6 +23,8 @@ router.get('/scheduled/all', ScheduleController.schedule_get_all_scheduled);
 
 router.get('/scheduled/next', ScheduleController.schedule_get_next_scheduled);
 
+router.patch('/no-calculation-update/:gameId', ScheduleController.schedule_update_by_id_without_calculations)
+
 //test
 router.get('/scheduled/next/game_week/:nextGameWeek', ScheduleController.schedule_get_all_shceduled_for_next_game_week);
 

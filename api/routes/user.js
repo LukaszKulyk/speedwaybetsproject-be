@@ -11,10 +11,14 @@ router.post('/signup', UserController.user_singup);
 
 router.post('/login', UserController.user_login);
 
+//router.get('/currenttable/calculate', UserController.user_calculate_and_update_players_table);
+
 router.delete('/:userId', checkAdmin, UserController.user_delete_one_by_id);
 
 router.patch('/:userId', checkAdmin, UserController.user_update_by_id);
 
-router.get('/players/all', checkAdmin, UserController.get_all_players);
+router.get('/players/all', UserController.get_all_players);
+
+router.get('/calculate-current-table', UserController.user_calculate_and_update_players_table);
 
 module.exports = router;
