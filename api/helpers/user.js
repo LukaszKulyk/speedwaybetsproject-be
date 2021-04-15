@@ -52,8 +52,8 @@ exports.calculateUsersTableAfterGameUpdate = () => {
                             _id: new mongoose.Types.ObjectId(),
                             creationDate: new Date,
                             lastUpdateDate: new Date,
-                            gameWeek: 1, //in the future it can be taken from settings???
-                            season: 2021, //in the future it can be taken from settings???
+                            gameWeek: response.playerResultsTable.gameWeek, //in the future it can be taken from settings???
+                            season: response.playerResultsTable.season, //in the future it can be taken from settings???
                             currentRank: currentRank.usersRank
                         });
 
