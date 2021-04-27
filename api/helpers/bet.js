@@ -1,27 +1,27 @@
 exports.checkHowManyPointsUserCollectedForCurrentGame = (betResult) => {
     let collectedPoints = 0;
     if(betResult > 12){
-        console.log('User collected no points.');
+        //console.log('User collected no points.');
         collectedPoints = 0;
     }
     else if(betResult <= 12 && betResult > 8){
-        console.log('User collected 2 points.');
+        //console.log('User collected 2 points.');
         collectedPoints = 2;
     }
     else if(betResult <= 8 && betResult > 4){
-        console.log('User collected 4 points.');
+        //console.log('User collected 4 points.');
         collectedPoints = 4;
     }
     else if(betResult <= 4 && betResult > 2){
-        console.log('User collected 6 points.');
+        //console.log('User collected 6 points.');
         collectedPoints = 6;
     }
     else if(betResult === 2 || betResult === 1){
-        console.log('User collected 8 points.');
+        //console.log('User collected 8 points.');
         collectedPoints = 8;
     }
     else if(betResult === 0){
-        console.log('User collected 10 points.');
+        //console.log('User collected 10 points.');
         collectedPoints = 10;
     }
     else{
@@ -69,22 +69,13 @@ exports.calculateDifferenceBetweenGamePointsAndBetPoints = (gameSmallPoints, bet
 
 exports.checkAndCalculatePointsWhichBetCollectsForCurrentGame = (gameDetails, betDetails) => {
     let pointsCollected = 0;
-    //console.log(betDetails._id);
 	let betWinnerTeam = this.calculateWinnerValue(betDetails.homeTeamPoints, betDetails.awayTeamPoints);
 	let gameWinnerTeam = this.calculateWinnerValue(gameDetails.homeTeamPoints, gameDetails.awayTeamPoints);
-	//console.log(betWinnerTeam);
-	//console.log(gameWinnerTeam);
 	let isBetMadeForWinningTeam = this.checkIfBetWasMadeForWinningTeam(gameWinnerTeam.winningTeam, betWinnerTeam.winningTeam);
-	//console.log(isBetMadeForWinningTeam);
-	if(isBetMadeForWinningTeam) {
-		//console.log('Proper team win. We can move on.')
-	    //console.log(betWinnerTeam);
-	    //console.log(betWinnerTeam);
+	
+    if(isBetMadeForWinningTeam) {
         let pointDifference = this.calculateDifferenceBetweenGamePointsAndBetPoints(gameWinnerTeam.pointsDifference, betWinnerTeam.pointsDifference);
-        //console.log(pointDifference);
         pointsCollected = this.checkHowManyPointsUserCollectedForCurrentGame(pointDifference);
-        //console.log(pointsCollected);
-        //here we need to make a PATCH
     }
     return pointsCollected;
 }

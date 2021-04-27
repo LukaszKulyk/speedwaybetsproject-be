@@ -283,7 +283,12 @@ exports.schedule_update_by_id = (req,res,next) => {
 							Bet.updateOne({ _id: betToUpdateId }, { $set: updateBetOps})
 								.exec()
 								.then(result => {
-									console.log(result);
+									const message = {
+										message: 'Bet was properly updated!',
+										betId: bet._id,
+										userId: bet.userId
+									}
+									console.log(message);
 								})
 								.catch(err => {
 									console.log(err);
@@ -298,7 +303,7 @@ exports.schedule_update_by_id = (req,res,next) => {
 							User.findById(userIdToBeUpdated)
 								.exec()
 								.then(doc => {
-									console.log(doc)
+									//console.log(doc)
 									userCollectedPointsBefore = doc.collectedPoints + pointsCollected;
 								})
 								.then(() => {
@@ -308,7 +313,11 @@ exports.schedule_update_by_id = (req,res,next) => {
 									User.updateOne({ _id: userIdToBeUpdated }, { $set: updateUserCollectedPoints})
 										.exec()
 										.then(result => {
-											console.log(result);
+											const userUpdatedMessage = {
+												message: 'User points was properly updated!',
+												currentPoints: updateUserCollectedPoints.collectedPoints,
+											}
+											console.log(userUpdatedMessage);
 										})
 								})
 						})
@@ -317,8 +326,9 @@ exports.schedule_update_by_id = (req,res,next) => {
 			else{
 				console.log('game is not played.')
 			}
-			console.log(result);
-            res.status(200).json(result);
+            res.status(200).json({
+				message: 'Game, Game Bets and User points were correctly updated!'
+			});
 		})
 		.then(() => {
 			userHelper.calculateUsersTableAfterGameUpdate();

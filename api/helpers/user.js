@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 const PlayersResultsTable = require('../models/playersResultsTable');
 
-exports.calculateUsersTableAfterGameUpdate = () => {
+exports.calculateUsersTableAfterGameUpdate = (req, res, next) => {
 
     User.find({isAdmin: false})
         .exec()
@@ -58,8 +58,11 @@ exports.calculateUsersTableAfterGameUpdate = () => {
                         });
 
                         playersResultsTable.save()
-                            .then(result => {
-                                console.log(result);
+                            .then(() => {
+                                console.log({
+                                    message: 'Players results Table has been updated.',
+                                    currentRank: playersResultsTable.currentRank
+                                });
                             })
                     }
                     else{
@@ -79,11 +82,6 @@ exports.calculateUsersTableAfterGameUpdate = () => {
                             })
                     }
                 })
-        })
-        .then(() => {
-            res.status(200).json({
-                message: 'Current table has been updated!'
-            })
         })
         .catch(err => {
             console.log(err);
