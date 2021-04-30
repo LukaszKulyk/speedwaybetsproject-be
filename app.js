@@ -9,6 +9,7 @@ const standingsRoutes = require('./api/routes/standings');
 const userRoutes = require('./api/routes/user');
 const scheduleRoutes = require('./api/routes/schedule');
 const BetRoutes = require('./api/routes/bet');
+const TeamRoutes = require('./api/routes/team');
 
 mongoose.connect(process.env.MONGO_ATLAS_CS, {
     useNewUrlParser: true,
@@ -35,6 +36,7 @@ app.use('/standings', standingsRoutes);
 app.use('/user', userRoutes);
 app.use('/schedule', scheduleRoutes);
 app.use('/bet', BetRoutes);
+app.use('/team', TeamRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');

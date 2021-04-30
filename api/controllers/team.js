@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const Team = require('../models/team');
+//const PlayersResultsTable = require('../models/playersResultsTable');
+
+const teamHelper = require('../helpers/team')
 
 /*
 router.get('/', TeamController.team_get_all);
@@ -13,6 +16,7 @@ router.patch('/', TeamController.team_update_one_by_id);
 exports.team_get_all = (req, res, next) => {
 
     Team.find()
+        .sort({'teamResults.position': 1})
         .exec()
         .then(docs => {
             const response = {
@@ -121,4 +125,20 @@ exports.team_update_one_by_id = (req, res, next) => {
                 error: err
             });
         });
+}
+
+exports.team_update_current_table_or_create_new = (req, res, next) => {
+    //const gameWeek = req.body.gameWeek;
+
+    const updateOps = {};
+    for (const ops of req.body) {
+        updateOps[ops.propName] = ops.value;
+    }
+
+    const currentStandings = teamHelper.getLastStandingsAndUpdateWithCurrentValues()
+    console.log(currentStandings)
+    //console.log(updateOps);
+    //const allTeamsDataSortedByPosition = teamHelper.allTeamsDataSortedByPosition();
+    //console.log(allTeamsDataSortedByPosition);
+    //teamHelper.calculateNewResultsTableValues();
 }

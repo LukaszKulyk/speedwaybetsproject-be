@@ -10,4 +10,6 @@ router.get('/:teamId', TeamController.team_get_one_by_id);
 router.delete('/:teamId', checkAdmin, TeamController.team_delete_one_by_id);
 router.patch('/:teamId', checkAdmin, TeamController.team_update_one_by_id);
 
+router.patch('/table/update', checkAdmin, TeamController.team_update_current_table_or_create_new)
+
 module.exports = router;
