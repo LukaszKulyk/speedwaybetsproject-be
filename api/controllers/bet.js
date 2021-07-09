@@ -195,6 +195,7 @@ exports.bet_get_all_bets_by_user = (req, res, next) => {
 exports.bet_get_all_bets_by_game = (req, res, next) => {
     const id = req.params.gameId
     Bet.find({gameId: id})
+        .sort({collectedPoints: -1})
         .exec()
         .then(docs => {
             const response = {
