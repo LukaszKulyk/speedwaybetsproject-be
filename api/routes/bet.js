@@ -17,7 +17,7 @@ router.delete('/:betId', checkAdmin, BetController.bet_delete_by_id);
 
 router.get('/user/:userId/all', BetController.bet_get_all_bets_by_user);
 
-router.get('/game/:gameId/all', checkAdmin, BetController.bet_get_all_bets_by_game);
+router.get('/game/:gameId/all', BetController.bet_get_all_bets_by_game); //checkAdmin,
 
 router.get('/user/:userId/game/:gameId', BetController.bet_get_user_bet_of_specific_game);
 

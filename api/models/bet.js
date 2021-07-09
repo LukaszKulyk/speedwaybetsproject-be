@@ -10,6 +10,7 @@ const betSchema = mongoose.Schema({
 	homeTeamPoints: { type: Number, required: true },//"Unia Leszno",
 	awayTeamPoints: { type: Number, required: true },//"Falubaz Zielona Góra",
 	collectedPoints: { type: Number},
+	username: { type: String, required: true, default: 'user'} //to be tested
 });
 
 module.exports = mongoose.model('Bet', betSchema);

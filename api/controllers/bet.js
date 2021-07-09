@@ -20,7 +20,8 @@ exports.bet_get_all = (req, res, next) => {
                         gameWeek: doc.gameWeek,
 						homeTeamPoints: doc.homeTeamPoints,
 						awayTeamPoints: doc.awayTeamPoints,
-                        collectedPoints: doc.collectedPoints
+                        collectedPoints: doc.collectedPoints,
+                        username: doc.username // to be tested
                     }
                 })
             }
@@ -50,6 +51,7 @@ exports.bet_create_new = (req, res, next) => {
                     gameWeek: req.body.gameWeek,
                     homeTeamPoints: req.body.homeTeamPoints,
                     awayTeamPoints: req.body.awayTeamPoints,
+                    username: req.body.username //to be tested
                 });
             
                 bet.save()
@@ -206,7 +208,8 @@ exports.bet_get_all_bets_by_game = (req, res, next) => {
                         userId: doc.userId,
 						homeTeamPoints: doc.homeTeamPoints,
 						awayTeamPoints: doc.awayTeamPoints,
-                        collectedPoints: doc.collectedPoints
+                        collectedPoints: doc.collectedPoints,
+                        username: doc.username // to be tested
                     }
                 })
             }
