@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const PlayersResultsTable = require('../models/playersResultsTable');
+const User = require('../models/user');
+
+const playerResultsHelper = require('../helpers/playersResultsTable')
 
 exports.playersResultsTable_get_all = (req, res, next) => {
     PlayersResultsTable.find()
@@ -115,7 +118,8 @@ exports.playersResultsTable_delete_one_by_id = (req, res, next) => {
 
 exports.playersResultsTable_get_last_results = (req, res, next) => {
     PlayersResultsTable.find()
-        .sort({gameWeek: -1})
+        //.sort({gameWeek: -1})
+        .sort({lastUpdateDate: -1})
         .limit(1)
         .exec()
         .then(docs => {
@@ -142,3 +146,123 @@ exports.playersResultsTable_get_last_results = (req, res, next) => {
             });
         });
 }
+
+exports.playersResultsTable_auto_create_new_table = (req, res, next) => {
+
+    const isNewGameWeekTableNeeded= req.body.isNewGameWeekTableNeeded
+
+    PlayersResultsTable.find()
+        .sort({gameWeek: -1})
+        .limit(1)
+        .exec()
+        .then(docs => {
+            const lastPlayersResultsTable = {
+                playerResultsTable: docs.map(doc => {
+                    return {
+						gameWeek: doc.gameWeek,
+						season: doc.season,
+						currentRank: doc.currentRank
+                    }
+                })
+            }
+
+            User.find({isAdmin: false})
+                .sort({collectedPoints: -1})
+                .exec()
+                .then(docs => {
+                    const currentPlayersResults = {
+                        users: docs.map(doc => {
+                            return {
+                                userName: doc.userName,
+                                collectedPoints: doc.collectedPoints
+                            }
+                        })
+                    }
+
+                    let userNewRank = currentPlayersResults.users.map((player, index) => {
+
+                        let userCurrentRank = lastPlayersResultsTable.playerResultsTable[0].currentRank.find(userLastRank => userLastRank.username === player.userName)
+                        let isCurrentRankAvailable = playerResultsHelper.checkIfUserRankAlreadyExist(userCurrentRank)
+
+                        if(isCurrentRankAvailable === false){
+                            return {
+                                pos: index + 1,
+                                username: player.userName,
+                                points: player.collectedPoints,
+                                '+/-': '0'
+                            }
+                        }
+                        else{
+                            let newArrowValue = playerResultsHelper.calculatePlayerPositionChange(userCurrentRank.pos, (index + 1))
+                            
+                            return {
+                                pos: index + 1,
+                                username: player.userName,
+                                points: player.collectedPoints,
+                                '+/-': newArrowValue
+                            }
+                            //playing with updates during game week
+                            /*if(isNewGameWeekTableNeeded === false){
+                                return {
+                                    pos: userCurrentRank.pos,
+                                    username: player.userName,
+                                    points: player.collectedPoints,
+                                    //'+/-': userCurrentRank."+/-"
+                                }
+                            }
+                            else{
+                                let newArrowValue = playerResultsHelper.calculatePlayerPositionChange(userCurrentRank.pos, (index + 1))
+                                
+                                return {
+                                    pos: index + 1,
+                                    username: player.userName,
+                                    points: player.collectedPoints,
+                                    '+/-': newArrowValue
+                                }
+                            }*/
+                        }
+                    })
+
+                    let newPlayersResultsTable;
+
+                    if(isNewGameWeekTableNeeded === true){
+
+                        newPlayersResultsTable = new PlayersResultsTable({
+                            _id: new mongoose.Types.ObjectId(),
+                            creationDate: new Date,
+                            lastUpdateDate: new Date,
+                            gameWeek: lastPlayersResultsTable.playerResultsTable[0].gameWeek + 1,
+                            season: lastPlayersResultsTable.playerResultsTable[0].season,
+                            currentRank: userNewRank
+                        });
+                    }
+                    else{
+                        newPlayersResultsTable = new PlayersResultsTable({
+                            _id: new mongoose.Types.ObjectId(),
+                            creationDate: new Date,
+                            lastUpdateDate: new Date,
+                            gameWeek: lastPlayersResultsTable.playerResultsTable[0].gameWeek,
+                            season: lastPlayersResultsTable.playerResultsTable[0].season,
+                            currentRank: userNewRank
+                        });
+                    }
+
+                    newPlayersResultsTable.save()
+                        .then(result => {
+                            console.log(result);
+                        })
+                        .catch(err => console.log(err));
+                
+                    res.status(201).json({
+                        message: 'New Player Table has been created.',
+                        createdPlayersTable: newPlayersResultsTable
+                    });
+                })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+    }
