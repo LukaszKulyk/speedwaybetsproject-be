@@ -6,6 +6,7 @@ const playersResultsTableSchema = mongoose.Schema({
     lastUpdateDate: { type: Date, default: Date.now },
     season: { type: Number, required: true },
     gameWeek: { type: Number, required: true, unique: false},
+    isGameWeekConfirmed: { type: Boolean, default: false },
     currentRank: mongoose.Schema.Types.Mixed
 })
 

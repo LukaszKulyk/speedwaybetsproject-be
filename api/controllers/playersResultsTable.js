@@ -18,6 +18,7 @@ exports.playersResultsTable_get_all = (req, res, next) => {
 						lastUpdateDate: doc.lastUpdateDate,
 						gameWeek: doc.gameWeek,
 						season: doc.season,
+                        isGameWeekConfirmed: doc.isGameWeekConfirmed,
 						currentRank: doc.currentRank
                     }
                 })
@@ -41,6 +42,7 @@ exports.playersResultsTable_create_new = (req, res, next) => {
 		lastUpdateDate: new Date,
         gameWeek: req.body.gameWeek,
         season: req.body.season,
+        isGameWeekConfirmed: req.body.isGameWeekConfirmed,
         currentRank: req.body.currentRank
     });
 
@@ -132,6 +134,7 @@ exports.playersResultsTable_get_last_results = (req, res, next) => {
 						lastUpdateDate: doc.lastUpdateDate,
 						gameWeek: doc.gameWeek,
 						season: doc.season,
+                        isGameWeekConfirmed: doc.isGameWeekConfirmed,
 						currentRank: doc.currentRank
                     }
                 })
@@ -231,6 +234,7 @@ exports.playersResultsTable_auto_create_new_table = (req, res, next) => {
                                 lastUpdateDate: new Date,
                                 gameWeek: lastPlayersResultsTable.playerResultsTable[0].gameWeek + 1,
                                 season: lastPlayersResultsTable.playerResultsTable[0].season,
+                                isGameWeekConfirmed: true,
                                 currentRank: sortedUserNewRank
                             });
                         }
@@ -241,6 +245,7 @@ exports.playersResultsTable_auto_create_new_table = (req, res, next) => {
                                 lastUpdateDate: new Date,
                                 gameWeek: lastPlayersResultsTable.playerResultsTable[0].gameWeek,
                                 season: lastPlayersResultsTable.playerResultsTable[0].season,
+                                isGameWeekConfirmed: false,
                                 currentRank: sortedUserNewRank
                             });
                         }
