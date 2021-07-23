@@ -16,4 +16,6 @@ router.delete('/:gameWeekId', checkAdmin, PlayersResultsTableController.playersR
 
 router.get('/results/last', PlayersResultsTableController.playersResultsTable_get_last_results);
 
+router.post('/create/auto', checkAdmin, PlayersResultsTableController.playersResultsTable_auto_create_new_table);
+
 module.exports = router;
