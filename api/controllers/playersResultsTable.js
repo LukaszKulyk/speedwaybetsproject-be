@@ -192,7 +192,7 @@ exports.playersResultsTable_auto_create_new_table = (req, res, next) => {
                                     pos: index + 1,
                                     username: player.userName,
                                     points: player.collectedPoints,
-                                    '+/-': '0'
+                                    "+/-": "0"
                                 }
                             }
                             else{
@@ -203,7 +203,7 @@ exports.playersResultsTable_auto_create_new_table = (req, res, next) => {
                                         pos: index + 1,
                                         username: player.userName,
                                         points: player.collectedPoints,
-                                        '+/-': newArrowValue
+                                        "+/-": newArrowValue
                                     }
                                 }
                                 else if(isNewGameWeekTableNeeded === false){
@@ -211,7 +211,7 @@ exports.playersResultsTable_auto_create_new_table = (req, res, next) => {
                                         pos: userCurrentRank.pos,
                                         username: player.userName,
                                         points: player.collectedPoints,
-                                        '+/-': userCurrentRank['+/-']
+                                        "+/-": userCurrentRank["+/-"]
                                     }
                                 }
                                 else{
