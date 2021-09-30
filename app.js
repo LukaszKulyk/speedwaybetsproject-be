@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const history = require('connect-history-api-fallback');
+
 const playersResultsTableRoutes = require('./api/routes/playersResultsTable');
 const standingsRoutes = require('./api/routes/standings');
 const userRoutes = require('./api/routes/user');
@@ -14,6 +16,8 @@ mongoose.connect(process.env.MONGO_ATLAS_CS, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
+
+app.use(history());
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
