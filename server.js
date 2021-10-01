@@ -29,7 +29,7 @@ const server = http.createServer(app);
 
 app.all("*", (_req, res) => {
   try {
-    res.sendFile('/absolute/path/to/index.html');
+    res.sendFile('src/index.html');
   } catch (error) {
     res.json({ success: false, message: "Something went wrong" });
   }
