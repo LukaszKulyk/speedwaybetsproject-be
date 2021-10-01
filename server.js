@@ -1,25 +1,25 @@
 const http = require('http');
 const app = require('./app');
-const fs = require('fs')
+//const fs = require('fs')
 
 const express = require('express');
 const history = require('connect-history-api-fallback');
 
-//const apps = express();
-//apps.use(history());
-//apps.use(express.static('src'));
+const apps = express();
+apps.use(history());
+apps.use(express.static('src'));
 
-//apps.get('/', (req, res) => {
-//    res.sendFile('src/index.html');
-//  });
+apps.get('/', (req, res) => {
+    res.sendFile('src/index.html');
+  });
 
 const port = process.env.PORT || 3000;
 
-//const server = http.createServer(app);
+const server = http.createServer(app);
 
-//server.listen(port);
+server.listen(port);
 
-
+/*
 http.createServer((req, res) => {
   fs.readFile('src/index.html', 'utf-8', (err, content) => {
     if (err) {
@@ -34,4 +34,4 @@ http.createServer((req, res) => {
   })
 }).listen(port, () => {
   console.log('Server listening on: http://localhost:%s', port)
-})
+})*/
