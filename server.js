@@ -20,8 +20,8 @@ const port = process.env.PORT || 3000;
 //server.listen(port);
 
 
-const server = http.createServer((req, res) => {
-  fs.readFile('index.html', 'utf-8', (err, content) => {
+http.createServer((req, res) => {
+  fs.readFile('src/index.html', 'utf-8', (err, content) => {
     if (err) {
       console.log('We cannot open "index.html" file.')
     }
