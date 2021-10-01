@@ -27,6 +27,14 @@ const port = process.env.PORT || 3000;
 
 const server = http.createServer(app);
 
+app.all("*", (_req, res) => {
+  try {
+    res.sendFile('/absolute/path/to/index.html');
+  } catch (error) {
+    res.json({ success: false, message: "Something went wrong" });
+  }
+});
+
 server.listen(port);
 
 /*
