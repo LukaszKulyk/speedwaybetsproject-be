@@ -649,3 +649,38 @@ exports.schedule_get_next_scheduled = (req, res, next) => {
 			});
 		});
 	};*/
+
+exports.v1_schedule_get_all_games_by_game_week = (req, res, next) => {
+	const gameWeek = req.params.gameWeek
+	Schedule.find({gameWeek: gameWeek})
+        .exec()
+        .then(games => {
+			const response = {
+				count: games.length,
+				schedule: games.map(game => {
+					return {
+						_id: game._id,
+						creationDate: game.creationDate,
+						lastUpdateDate: game.lastUpdateDate,
+						gameWeek: game.gameWeek,
+						season: game.season,
+						isGameWeekPlayed: game.isGameWeekPlayed,
+						isGamePlayed: game.isGamePlayed,
+						originalGameWeek: game.originalGameWeek,
+						scheduledGameDate: game.scheduledGameDate,
+						homeTeam: game.homeTeam,
+						awayTeam: game.awayTeam,
+						gameStatus: game.gameStatus,
+						gameResult: game.gameResult
+					}
+				})
+			}
+			res.status(200).json(response);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+}
