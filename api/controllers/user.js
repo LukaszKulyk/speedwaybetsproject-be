@@ -106,6 +106,60 @@ exports.user_login = (req, res, next) => {
         });
 }
 
+/*exports.v1_admin_login = (req, res, next) => {
+
+    User.find({ email: req.body.email })
+        .exec()
+        .then(user => {
+            if (user.length < 1) {
+                return res.status(401).json({
+                    message: 'Login failed, email/password incorrect.'
+                });
+            }
+            else if(user[0].isAdmin === false) {
+                return res.status(403).json({
+                    message: 'Login failed, you are not an admin!'
+                });
+            }
+            bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+                if (err) {
+                    return res.status(401).json({
+                        message: 'Login failed, email/password incorrect.'
+                    });
+                }
+                if (result) {
+                    const token = jwt.sign(
+                            {
+                                email: user[0].email,
+                                userId: user[0]._id,
+                                isAdmin: user[0].isAdmin
+                            }, 
+                            process.env.JWT_KEY, 
+                            {
+                                expiresIn: "1h"
+                            },
+                        );
+                        return res.status(200).json({
+                            message: 'Auth successful',
+                            token: token,
+                            username: user[0].userName,
+                            isAdmin: user[0].isAdmin,
+                            _id: user[0]._id
+                        });
+                }
+                res.status(401).json({
+                    message: 'Auth failed'
+                });
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+}*/
+
 exports.user_delete_one_by_id = (req, res, next) => {
     User.deleteOne({ _id: req.params.userId})
         .exec()

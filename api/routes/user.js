@@ -11,6 +11,8 @@ router.post('/signup', UserController.user_singup);
 
 router.post('/login', UserController.user_login);
 
+//router.post('/login/admin', UserController.v1_admin_login);
+
 //router.get('/currenttable/calculate', UserController.user_calculate_and_update_players_table);
 
 router.delete('/:userId', checkAdmin, UserController.user_delete_one_by_id);

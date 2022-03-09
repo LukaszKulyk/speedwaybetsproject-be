@@ -12,7 +12,7 @@ const userRoutes = require('./api/routes/user');
 const scheduleRoutes = require('./api/routes/schedule');
 const BetRoutes = require('./api/routes/bet');
 
-mongoose.connect(process.env.MONGO_ATLAS_CS, {
+mongoose.connect(process.env.MONGO_ATLAS_CS_LOCAL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
