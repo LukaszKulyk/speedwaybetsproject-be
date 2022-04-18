@@ -115,8 +115,14 @@ exports.prepareUserTableValues = (arrayOfUsers) => {
 exports.setCurrentRankArrows = (currentRank, lastRank) => {
 
     currentRank.forEach(user => {
+        let positionChange;
         let lastPosition = lastRank.filter(function(p){return p.username === user.username})
-        let positionChange = this.calculatePositionDifference(user.pos, lastPosition[0].pos)
+        if(lastPosition == undefined){
+            positionChange = 0;
+        }
+        else{
+            positionChange = this.calculatePositionDifference(user.pos, lastPosition[0].pos)
+        }
         let arrowValue = this.preparePositionDifferenceForArrow(positionChange)
         user["+/-"] = arrowValue
     })
