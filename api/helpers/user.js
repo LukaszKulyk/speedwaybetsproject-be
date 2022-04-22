@@ -117,7 +117,7 @@ exports.setCurrentRankArrows = (currentRank, lastRank) => {
     currentRank.forEach(user => {
         let positionChange;
         let lastPosition = lastRank.filter(function(p){return p.username === user.username})
-        if(lastPosition == undefined){
+        if(lastPosition == undefined || lastPosition.length <= 0){
             positionChange = 0;
         }
         else{
