@@ -41,7 +41,7 @@ exports.bet_create_new = (req, res, next) => {
     Schedule.findById(req.body.gameId)
         .then(game => {
             if(game.gameStatus === 'scheduled')
-            {
+            { 
                 const bet = new Bet({
                     _id: new mongoose.Types.ObjectId(),
                     creationDate: new Date,
