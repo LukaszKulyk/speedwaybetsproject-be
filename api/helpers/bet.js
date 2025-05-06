@@ -10,7 +10,7 @@ exports.checkHowManyPointsUserCollectedForCurrentGame = (betResult) => {
     }
     else if(betResult <= 8 && betResult > 4){
         //console.log('User collected 4 points.');
-        collectedPoints = 4;
+        collectedPoints = 4; // testing
     }
     else if(betResult <= 4 && betResult > 2){
         //console.log('User collected 6 points.');
